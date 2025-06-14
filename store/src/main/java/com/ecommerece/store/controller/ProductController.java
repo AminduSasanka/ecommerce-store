@@ -1,4 +1,81 @@
 package com.ecommerece.store.controller;
 
+import com.ecommerece.store.exception.ProductNotFoundException;
+import com.ecommerece.store.model.Category;
+import com.ecommerece.store.model.Product;
+import com.ecommerece.store.request.AddProductRequest;
+import com.ecommerece.store.request.UpdateProductRequest;
+import com.ecommerece.store.response.ApiResponse;
+import com.ecommerece.store.service.product.IProductService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+
+@RequiredArgsConstructor
+@RestController
+@RequestMapping("/${api.prefix}/products")
 public class ProductController {
+    private final IProductService productService;
+
+    @GetMapping("/")
+    public ResponseEntity<ApiResponse> getAllProducts() {
+        return ResponseEntity.ok()
+                .body(new ApiResponse("Products found", productService.getAllProducts()));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse> getProductById(@PathVariable int id) {
+        try {
+            Product product = productService.getProductById(id);
+
+            return ResponseEntity.ok().body(new ApiResponse("Product found", product));
+        } catch (ProductNotFoundException e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse("Product does not exists", null));
+        }
+    }
+
+    @PostMapping("/")
+    public ResponseEntity<ApiResponse> createProduct(@RequestBody AddProductRequest product, @RequestBody Category category) {
+        try {
+            Product newProduct = productService.addProduct(product, category);
+
+            return ResponseEntity.ok().body(new ApiResponse("Product added", newProduct));
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Product creation failed", e.getMessage()));
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse> updateProduct(@PathVariable int id, @RequestBody UpdateProductRequest product) {
+        try {
+            Product updatedProduct = productService.updateProduct(product, id);
+
+            return ResponseEntity.ok().body(new ApiResponse("Product updated", updatedProduct));
+        } catch (ProductNotFoundException e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse("Product not found", null));
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse> deleteProduct(@PathVariable int id) {
+        try {
+            productService.deleteProduct(id);
+
+            return ResponseEntity.ok().body(new ApiResponse("Product deleted", null));
+        } catch (ProductNotFoundException e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse("Product not found", null));
+        }
+    }
+
+    @GetMapping("/{category}")
+    public ResponseEntity<ApiResponse> getAllProductsByCategory(@PathVariable String category) {
+        return ResponseEntity.ok()
+                .body(new ApiResponse("Products found", productService.getAllProductsByCategory(category)));
+    }
 }
