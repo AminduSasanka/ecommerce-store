@@ -11,19 +11,22 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/${api.prefix}/products")
+@RequestMapping("/products")
 public class ProductController {
     private final IProductService productService;
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<ApiResponse> getAllProducts() {
-        return ResponseEntity.ok()
-                .body(new ApiResponse("Products found", productService.getAllProducts()));
+        List<Product> products = productService.getAllProducts();
+
+        return ResponseEntity.ok().body(new ApiResponse("Products found", products));
     }
 
     @GetMapping("/{id}")
@@ -37,10 +40,10 @@ public class ProductController {
         }
     }
 
-    @PostMapping("/")
-    public ResponseEntity<ApiResponse> createProduct(@RequestBody AddProductRequest product, @RequestBody Category category) {
+    @PostMapping
+    public ResponseEntity<ApiResponse> createProduct(@RequestBody AddProductRequest product) {
         try {
-            Product newProduct = productService.addProduct(product, category);
+            Product newProduct = productService.addProduct(product);
 
             return ResponseEntity.ok().body(new ApiResponse("Product added", newProduct));
         } catch (Exception e) {
@@ -73,7 +76,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/{category}")
+    @GetMapping("/byCategory/{category}")
     public ResponseEntity<ApiResponse> getAllProductsByCategory(@PathVariable String category) {
         return ResponseEntity.ok()
                 .body(new ApiResponse("Products found", productService.getAllProductsByCategory(category)));
