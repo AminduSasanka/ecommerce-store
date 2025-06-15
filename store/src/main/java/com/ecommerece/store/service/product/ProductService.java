@@ -30,10 +30,10 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public Product addProduct(AddProductRequest product, Category category) {
-        Category foundCategory = Optional.ofNullable(categoryRepository.findByName(category.getName()))
+    public Product addProduct(AddProductRequest product) {
+        Category foundCategory = Optional.ofNullable(categoryRepository.findByName(product.getCategory()))
                 .orElseGet(() -> {
-                    Category newCategory = new Category(category.getName());
+                    Category newCategory = new Category(product.getCategory());
                     return categoryRepository.save(newCategory);
                 });
 

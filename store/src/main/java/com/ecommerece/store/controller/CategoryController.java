@@ -15,11 +15,11 @@ import static org.springframework.http.HttpStatus.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("${api.prefix}/categories")
+@RequestMapping("/categories")
 public class CategoryController {
     private final ICategoryService categoryService;
 
-    @GetMapping("/all")
+    @GetMapping()
     public ResponseEntity<ApiResponse> getAllCategories() {
         try {
             List<Category> categories = categoryService.findAll();

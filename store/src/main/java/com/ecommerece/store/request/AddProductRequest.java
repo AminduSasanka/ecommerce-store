@@ -1,6 +1,5 @@
 package com.ecommerece.store.request;
 
-import com.ecommerece.store.model.Category;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -13,5 +12,5 @@ public class AddProductRequest {
     private BigDecimal price;
     private int quantity;
     private String brand;
-    private Category category;
+    private String category;
 }
