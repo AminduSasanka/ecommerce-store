@@ -27,7 +27,7 @@ public class ProductService implements IProductService {
     private final ImageRepository imageRepository;
 
     @Override
-    public Product getProductById(int id) {
+    public Product getProductById(Long id) {
         return productRepository
                 .findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found!"));
@@ -47,7 +47,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public Product updateProduct(UpdateProductRequest product, int id) {
+    public Product updateProduct(UpdateProductRequest product, Long id) {
         Product existingProduct = productRepository
                 .findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found!"));
@@ -58,7 +58,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public void deleteProduct(int id) {
+    public void deleteProduct(Long id) {
          productRepository
                 .findById(id)
                 .ifPresentOrElse(

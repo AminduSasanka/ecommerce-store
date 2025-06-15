@@ -1,7 +1,6 @@
 package com.ecommerece.store.service.product;
 
 import com.ecommerece.store.dto.ProductDto;
-import com.ecommerece.store.model.Category;
 import com.ecommerece.store.model.Product;
 import com.ecommerece.store.request.AddProductRequest;
 import com.ecommerece.store.request.UpdateProductRequest;
@@ -9,10 +8,10 @@ import com.ecommerece.store.request.UpdateProductRequest;
 import java.util.List;
 
 public interface IProductService {
-    Product getProductById(int id);
+    Product getProductById(Long id);
     Product addProduct(AddProductRequest product);
-    Product updateProduct(UpdateProductRequest product, int id);
-    void deleteProduct(int id);
+    Product updateProduct(UpdateProductRequest product, Long id);
+    void deleteProduct(Long id);
     List<Product> getAllProducts();
     List<Product> getAllProductsByCategory(String category);
     List<Product> getAllProductsByBrand(String brand);
