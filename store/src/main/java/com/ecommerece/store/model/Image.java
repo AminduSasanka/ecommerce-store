@@ -18,7 +18,6 @@ public class Image {
     private String filePath;
     private String fileType;
 
-    @JsonIgnore
     @Lob
     private Blob image;
     private String downloadUrl;

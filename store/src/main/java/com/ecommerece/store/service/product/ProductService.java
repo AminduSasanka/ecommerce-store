@@ -1,26 +1,30 @@
 package com.ecommerece.store.service.product;
 
+import com.ecommerece.store.dto.ImageDto;
+import com.ecommerece.store.dto.ProductDto;
 import com.ecommerece.store.exception.ProductNotFoundException;
 import com.ecommerece.store.model.Category;
+import com.ecommerece.store.model.Image;
 import com.ecommerece.store.model.Product;
 import com.ecommerece.store.repository.CategoryRepository;
+import com.ecommerece.store.repository.ImageRepository;
 import com.ecommerece.store.repository.ProductRepository;
 import com.ecommerece.store.request.AddProductRequest;
 import com.ecommerece.store.request.UpdateProductRequest;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ProductService implements IProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
-
-    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository) {
-        this.productRepository = productRepository;
-        this.categoryRepository = categoryRepository;
-    }
+    private final ModelMapper modelMapper;
+    private final ImageRepository imageRepository;
 
     @Override
     public Product getProductById(int id) {
@@ -96,6 +100,22 @@ public class ProductService implements IProductService {
     @Override
     public Long countProductsByBrandAndName(String brand, String name) {
         return productRepository.countProductByBrandAndName(brand, name);
+    }
+
+    @Override
+    public ProductDto convertToDto(Product product) {
+        ProductDto productDto = modelMapper.map(product, ProductDto.class);
+        List<Image> images = imageRepository.findByProductId(product.getId());
+        List<ImageDto> imageDtos = images.stream().map(image -> modelMapper.map(image, ImageDto.class)).toList();
+
+        productDto.setImages(imageDtos);
+
+        return productDto;
+    }
+
+    @Override
+    public List<ProductDto> getConvertedProducts(List<Product> products){
+        return products.stream().map(this::convertToDto).toList();
     }
 
     private Product createProduct(AddProductRequest product, Category category){

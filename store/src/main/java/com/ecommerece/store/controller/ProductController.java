@@ -1,7 +1,7 @@
 package com.ecommerece.store.controller;
 
+import com.ecommerece.store.dto.ProductDto;
 import com.ecommerece.store.exception.ProductNotFoundException;
-import com.ecommerece.store.model.Category;
 import com.ecommerece.store.model.Product;
 import com.ecommerece.store.request.AddProductRequest;
 import com.ecommerece.store.request.UpdateProductRequest;
@@ -25,16 +25,18 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<ApiResponse> getAllProducts() {
         List<Product> products = productService.getAllProducts();
+        List<ProductDto> convertedProducts = productService.getConvertedProducts(products);
 
-        return ResponseEntity.ok().body(new ApiResponse("Products found", products));
+        return ResponseEntity.ok().body(new ApiResponse("Products found", convertedProducts));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> getProductById(@PathVariable int id) {
         try {
             Product product = productService.getProductById(id);
+            ProductDto convertedProduct = productService.convertToDto(product);
 
-            return ResponseEntity.ok().body(new ApiResponse("Product found", product));
+            return ResponseEntity.ok().body(new ApiResponse("Product found", convertedProduct));
         } catch (ProductNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse("Product does not exists", null));
         }
@@ -58,8 +60,9 @@ public class ProductController {
     public ResponseEntity<ApiResponse> updateProduct(@PathVariable int id, @RequestBody UpdateProductRequest product) {
         try {
             Product updatedProduct = productService.updateProduct(product, id);
+            ProductDto convertedProduct = productService.convertToDto(updatedProduct);
 
-            return ResponseEntity.ok().body(new ApiResponse("Product updated", updatedProduct));
+            return ResponseEntity.ok().body(new ApiResponse("Product updated", convertedProduct));
         } catch (ProductNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse("Product not found", null));
         }

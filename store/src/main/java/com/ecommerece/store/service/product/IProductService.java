@@ -1,5 +1,6 @@
 package com.ecommerece.store.service.product;
 
+import com.ecommerece.store.dto.ProductDto;
 import com.ecommerece.store.model.Category;
 import com.ecommerece.store.model.Product;
 import com.ecommerece.store.request.AddProductRequest;
@@ -19,4 +20,6 @@ public interface IProductService {
     List<Product> getAllProductsByName(String name);
     List<Product> getAllProductsByNameAndBrand(String name, String brand);
     Long countProductsByBrandAndName(String brand, String name);
+    ProductDto convertToDto(Product product);
+    List<ProductDto> getConvertedProducts(List<Product> products);
 }
