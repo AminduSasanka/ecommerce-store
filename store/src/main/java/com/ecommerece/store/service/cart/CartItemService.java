@@ -49,8 +49,8 @@ public class CartItemService implements ICartItemService {
     }
 
     @Override
-    public void removeCartItem(Long cartItemId, Long productId) {
-        Cart cart = cartService.getCartById(cartItemId);
+    public void removeCartItem(Long cartId, Long productId) {
+        Cart cart = cartService.getCartById(cartId);
         CartItem itemToRemove = getCartItemFromCart(cart.getId(), productId);
 
         cart.removeItem(itemToRemove);
