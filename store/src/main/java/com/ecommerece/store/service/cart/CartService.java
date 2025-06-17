@@ -40,4 +40,9 @@ public class CartService implements ICartService {
 
         return cart.getTotalAmount();
     }
+
+    @Override
+    public Cart getCartByUserId(Long id) {
+        return cartRepository.findByUserId(id);
+    }
 }

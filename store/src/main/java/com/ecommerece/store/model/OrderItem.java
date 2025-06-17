@@ -1,6 +1,7 @@
 package com.ecommerece.store.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,11 +20,21 @@ public class OrderItem {
     private int quantity;
     private BigDecimal totalPrice;
 
-    @OneToMany
+    @ManyToOne
     @JoinColumn(name = "product_id")
-    private List<Product> product;
+    private Product product;
 
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
+
+    public OrderItem(Order order, Product product, int quantity) {
+        this.quantity = quantity;
+        this.product = product;
+        this.order = order;
+    }
+
+    public void setTotalPrice() {
+        this.totalPrice = product.getPrice().multiply(new BigDecimal(quantity));
+    }
 }

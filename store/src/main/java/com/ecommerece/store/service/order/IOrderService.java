@@ -14,7 +14,5 @@ public interface IOrderService {
 
     List<OrderItem> getOrderItemsByOrderId(Long orderId);
 
-    Order placeOrder(User user, Cart cart);
-
-    Order createOrder(User user);
+    Order placeOrder(User user);
 }
