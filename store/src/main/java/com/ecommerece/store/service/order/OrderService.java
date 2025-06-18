@@ -1,5 +1,7 @@
 package com.ecommerece.store.service.order;
 
+import com.ecommerece.store.dto.OrderDto;
+import com.ecommerece.store.dto.OrderItemDto;
 import com.ecommerece.store.enums.OrderStatus;
 import com.ecommerece.store.exception.ResourceNotFoundException;
 import com.ecommerece.store.model.*;
@@ -8,6 +10,7 @@ import com.ecommerece.store.repository.ProductRepository;
 import com.ecommerece.store.service.cart.CartService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -20,6 +23,7 @@ public class OrderService implements IOrderService {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final CartService cartService;
+    private final ModelMapper modelMapper;
 
     @Override
     public Order getOrderById(Long orderId) throws ResourceNotFoundException {
@@ -28,8 +32,12 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public List<Order> getOrdersByUserId(User user) {
-        return orderRepository.findAllByUser(user);
+    public List<OrderDto> getOrdersByUserId(Long userId) {
+        List<Order> userOrders = orderRepository.findAllByUserId(userId);
+
+        return userOrders.stream()
+                .map(this::convertToDto)
+                .toList();
     }
 
     @Override
@@ -85,5 +93,16 @@ public class OrderService implements IOrderService {
         }
 
         return total;
+    }
+
+    private OrderDto convertToDto(Order order) {
+        OrderDto orderDto = modelMapper.map(order, OrderDto.class);
+
+        List<OrderItemDto> orderItemDtos = order.getOrderItems().stream()
+                .map((orderItem) -> modelMapper.map(orderItem, OrderItemDto.class)).toList();
+
+        orderDto.setOrderItems(orderItemDtos);
+
+        return orderDto;
     }
 }

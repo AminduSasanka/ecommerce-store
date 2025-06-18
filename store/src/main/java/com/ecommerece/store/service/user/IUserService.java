@@ -1,10 +1,13 @@
 package com.ecommerece.store.service.user;
 
+import com.ecommerece.store.exception.ResourceNotFoundException;
 import com.ecommerece.store.model.User;
 import com.ecommerece.store.request.CreateUserRequest;
 import com.ecommerece.store.request.UpdateUserRequest;
 
 public interface IUserService {
+    User getUserById(Long userId) throws ResourceNotFoundException;
+
     User getUserByFirstname(String firstname);
 
     User getUserByLastname(String lastName);
