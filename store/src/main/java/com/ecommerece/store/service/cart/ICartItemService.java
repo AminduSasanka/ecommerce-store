@@ -1,5 +1,6 @@
 package com.ecommerece.store.service.cart;
 
+import com.ecommerece.store.dto.CartItemDto;
 import com.ecommerece.store.model.CartItem;
 
 public interface ICartItemService {
@@ -8,4 +9,6 @@ public interface ICartItemService {
     void updateCartItem(Long cartItemId, Long productId, int quantity);
 
     CartItem getCartItemFromCart(Long cartId, Long productId);
+
+    CartItemDto convertToDto(CartItem cartItem);
 }

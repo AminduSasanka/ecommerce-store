@@ -5,6 +5,7 @@ import com.ecommerece.store.dto.OrderItemDto;
 import com.ecommerece.store.enums.OrderStatus;
 import com.ecommerece.store.exception.ResourceNotFoundException;
 import com.ecommerece.store.model.*;
+import com.ecommerece.store.repository.CartRepository;
 import com.ecommerece.store.repository.OrderRepository;
 import com.ecommerece.store.repository.ProductRepository;
 import com.ecommerece.store.repository.UserRepository;
@@ -26,6 +27,7 @@ public class OrderService implements IOrderService {
     private final CartService cartService;
     private final ModelMapper modelMapper;
     private final UserRepository userRepository;
+    private final CartRepository cartRepository;
 
     @Override
     public Order getOrderById(Long orderId) throws ResourceNotFoundException {
@@ -51,7 +53,7 @@ public class OrderService implements IOrderService {
     @Override
     public Order placeOrder(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        Cart cart = cartService.getCartByUserId(user.getId());
+        Cart cart = cartRepository.findByUserId(user.getId());
 
         Order order = createOrder(user);
         List<OrderItem> orderItems = createOrderItems(cart, order);

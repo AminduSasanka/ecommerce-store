@@ -1,7 +1,7 @@
 package com.ecommerece.store.controller;
 
+import com.ecommerece.store.dto.CartDto;
 import com.ecommerece.store.exception.ResourceNotFoundException;
-import com.ecommerece.store.model.Cart;
 import com.ecommerece.store.response.ApiResponse;
 import com.ecommerece.store.service.cart.ICartService;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class CartController {
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> getCarts(@PathVariable Long id) {
         try {
-            Cart cart = cartService.getCartById(id);
+            CartDto cart = cartService.getCartById(id);
 
             return ResponseEntity.ok().body(new ApiResponse("Cart found!", cart));
         } catch (ResourceNotFoundException e) {

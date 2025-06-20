@@ -1,5 +1,7 @@
 package com.ecommerece.store.service.cart;
 
+import com.ecommerece.store.dto.CartItemDto;
+import com.ecommerece.store.dto.ProductDto;
 import com.ecommerece.store.exception.ResourceNotFoundException;
 import com.ecommerece.store.model.Cart;
 import com.ecommerece.store.model.CartItem;
@@ -8,6 +10,7 @@ import com.ecommerece.store.repository.CartItemRepository;
 import com.ecommerece.store.repository.CartRepository;
 import com.ecommerece.store.service.product.IProductService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -17,12 +20,12 @@ import java.math.BigDecimal;
 public class CartItemService implements ICartItemService {
     private final CartItemRepository cartItemRepository;
     private final CartRepository cartRepository;
-    private final ICartService cartService;
     private final IProductService productService;
+    private final ModelMapper modelMapper;
 
     @Override
-    public void addCartItem(Long cartId, Long productId, int quantity) {
-        Cart cart = cartService.getCartById(cartId);
+    public void addCartItem(Long cartId, Long productId, int quantity) throws ResourceNotFoundException {
+        Cart cart = cartRepository.findById(cartId).orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
         Product product = productService.getProductById(productId);
 
         CartItem cartItem = cart.getCartItems()
@@ -49,8 +52,8 @@ public class CartItemService implements ICartItemService {
     }
 
     @Override
-    public void removeCartItem(Long cartId, Long productId) {
-        Cart cart = cartService.getCartById(cartId);
+    public void removeCartItem(Long cartId, Long productId) throws ResourceNotFoundException {
+        Cart cart = cartRepository.findById(cartId).orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
         CartItem itemToRemove = getCartItemFromCart(cart.getId(), productId);
 
         cart.removeItem(itemToRemove);
@@ -58,8 +61,8 @@ public class CartItemService implements ICartItemService {
     }
 
     @Override
-    public void updateCartItem(Long cartItemId, Long productId, int quantity) {
-        Cart cart = cartService.getCartById(cartItemId);
+    public void updateCartItem(Long cartItemId, Long productId, int quantity) throws ResourceNotFoundException {
+        Cart cart = cartRepository.findById(cartItemId).orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
 
         cart.getCartItems().stream()
                 .filter(item -> item.getProduct().getId().equals(productId))
@@ -79,12 +82,22 @@ public class CartItemService implements ICartItemService {
     }
 
     @Override
-    public CartItem getCartItemFromCart(Long cartId, Long productId) {
+    public CartItem getCartItemFromCart(Long cartId, Long productId) throws ResourceNotFoundException {
         Cart cart = cartRepository.findById(cartId).orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
 
         return cart.getCartItems().stream()
                 .filter(item -> item.getProduct().getId().equals(productId))
                 .findFirst()
                 .orElseThrow(() -> new ResourceNotFoundException("Cart item not found"));
+    }
+
+    @Override
+    public CartItemDto convertToDto(CartItem cartItem) {
+        CartItemDto cartItemDto = modelMapper.map(cartItem, CartItemDto.class);
+        ProductDto productDto = productService.convertToDto(cartItem.getProduct());
+
+        cartItemDto.setProduct(productDto);
+
+        return cartItemDto;
     }
 }
