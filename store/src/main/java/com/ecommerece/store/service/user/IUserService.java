@@ -1,9 +1,12 @@
 package com.ecommerece.store.service.user;
 
+import com.ecommerece.store.exception.AlreadyExistException;
 import com.ecommerece.store.exception.ResourceNotFoundException;
 import com.ecommerece.store.model.User;
 import com.ecommerece.store.request.CreateUserRequest;
 import com.ecommerece.store.request.UpdateUserRequest;
+
+import java.util.List;
 
 public interface IUserService {
     User getUserById(Long userId) throws ResourceNotFoundException;
@@ -14,9 +17,11 @@ public interface IUserService {
 
     User getUserByEmail(String email);
 
-    User createUser(CreateUserRequest request);
+    User createUser(CreateUserRequest request) throws AlreadyExistException;
 
     User updateUser(UpdateUserRequest request, Long userId);
 
-    void deleteUser(Long userId);
+    void deleteUser(Long userId) throws ResourceNotFoundException;
+
+    List<User> getAllUsers();
 }

@@ -9,6 +9,7 @@ import com.ecommerece.store.request.UpdateUserRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -38,7 +39,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User createUser(CreateUserRequest request) {
+    public User createUser(CreateUserRequest request) throws AlreadyExistException {
         return Optional.of(request)
                 .filter((req) -> !userRepository.existsByEmail(req.getEmail()))
                 .map(req -> {
@@ -68,10 +69,15 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void deleteUser(Long userId) {
+    public void deleteUser(Long userId) throws ResourceNotFoundException {
         userRepository.findById(userId)
                 .ifPresentOrElse(userRepository::delete,() -> {
                     throw new ResourceNotFoundException("User not found");
                 });
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 }
