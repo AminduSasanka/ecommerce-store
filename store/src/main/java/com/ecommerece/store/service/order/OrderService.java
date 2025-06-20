@@ -7,6 +7,7 @@ import com.ecommerece.store.exception.ResourceNotFoundException;
 import com.ecommerece.store.model.*;
 import com.ecommerece.store.repository.OrderRepository;
 import com.ecommerece.store.repository.ProductRepository;
+import com.ecommerece.store.repository.UserRepository;
 import com.ecommerece.store.service.cart.CartService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ public class OrderService implements IOrderService {
     private final ProductRepository productRepository;
     private final CartService cartService;
     private final ModelMapper modelMapper;
+    private final UserRepository userRepository;
 
     @Override
     public Order getOrderById(Long orderId) throws ResourceNotFoundException {
@@ -47,7 +49,8 @@ public class OrderService implements IOrderService {
 
     @Transactional
     @Override
-    public Order placeOrder(User user) {
+    public Order placeOrder(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         Cart cart = cartService.getCartByUserId(user.getId());
 
         Order order = createOrder(user);

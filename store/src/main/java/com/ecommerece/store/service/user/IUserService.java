@@ -1,5 +1,6 @@
 package com.ecommerece.store.service.user;
 
+import com.ecommerece.store.dto.UserDto;
 import com.ecommerece.store.exception.AlreadyExistException;
 import com.ecommerece.store.exception.ResourceNotFoundException;
 import com.ecommerece.store.model.User;
@@ -9,19 +10,21 @@ import com.ecommerece.store.request.UpdateUserRequest;
 import java.util.List;
 
 public interface IUserService {
-    User getUserById(Long userId) throws ResourceNotFoundException;
+    UserDto getUserById(Long userId) throws ResourceNotFoundException;
 
-    User getUserByFirstname(String firstname);
+    UserDto getUserByFirstname(String firstname);
 
-    User getUserByLastname(String lastName);
+    UserDto getUserByLastname(String lastName);
 
-    User getUserByEmail(String email);
+    UserDto getUserByEmail(String email);
 
-    User createUser(CreateUserRequest request) throws AlreadyExistException;
+    UserDto createUser(CreateUserRequest request) throws AlreadyExistException;
 
-    User updateUser(UpdateUserRequest request, Long userId);
+    UserDto updateUser(UpdateUserRequest request, Long userId);
 
     void deleteUser(Long userId) throws ResourceNotFoundException;
 
-    List<User> getAllUsers();
+    List<UserDto> getAllUsers();
+
+    UserDto convertToDto(User user);
 }

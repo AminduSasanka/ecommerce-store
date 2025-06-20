@@ -1,8 +1,8 @@
 package com.ecommerece.store.controller;
 
+import com.ecommerece.store.dto.UserDto;
 import com.ecommerece.store.exception.AlreadyExistException;
 import com.ecommerece.store.exception.ResourceNotFoundException;
-import com.ecommerece.store.model.User;
 import com.ecommerece.store.request.CreateUserRequest;
 import com.ecommerece.store.request.UpdateUserRequest;
 import com.ecommerece.store.response.ApiResponse;
@@ -44,7 +44,7 @@ public class UserController {
     @PostMapping
     public ResponseEntity<ApiResponse> createUser(@RequestBody CreateUserRequest request) {
         try {
-            User user = userService.createUser(request);
+            UserDto user = userService.createUser(request);
 
             return ResponseEntity.ok().body(new ApiResponse("User created", user));
         } catch (AlreadyExistException e) {
@@ -59,7 +59,7 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse> updateUser(@PathVariable Long id, @RequestBody UpdateUserRequest request) {
         try {
-            User user = userService.updateUser(request, id);
+            UserDto user = userService.updateUser(request, id);
 
             return ResponseEntity.ok()
                     .body(new ApiResponse("User updated", user));
