@@ -13,6 +13,8 @@ import com.ecommerece.store.request.AddProductRequest;
 import com.ecommerece.store.request.UpdateProductRequest;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -70,6 +72,14 @@ public class ProductService implements IProductService {
     @Override
     public List<Product> getAllProducts() {
         return productRepository.findAll();
+    }
+
+    @Override
+    public List<Product> getAllProducts(int pageSize, int page, String sortBy, String sortOrder) {
+        Sort.Direction sortDirection = Sort.Direction.fromString(sortOrder);
+        PageRequest pageRequest = PageRequest.of(page, pageSize, Sort.by(sortDirection, sortBy));
+
+        return productRepository.findAll(pageRequest).stream().toList();
     }
 
     @Override

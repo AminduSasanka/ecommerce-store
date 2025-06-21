@@ -14,8 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -23,9 +22,29 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class ProductController {
     private final IProductService productService;
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<ApiResponse> getAllProducts() {
         List<Product> products = productService.getAllProducts();
+        List<ProductDto> convertedProducts = productService.getConvertedProducts(products);
+
+        return ResponseEntity.ok().body(new ApiResponse("Products found", convertedProducts));
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse> getProducts(
+            @RequestParam(required = false, name = "sortBy", defaultValue = "name") String sortBy,
+            @RequestParam(required = false, name = "sortingOrder", defaultValue = "asc") String sortOrder,
+            @RequestParam(required = false, name = "page", defaultValue = "0") int page,
+            @RequestParam(required = false, name = "pageSize", defaultValue = "10") int pageSize
+    ) {
+        if (pageSize <= 0) {
+            return ResponseEntity.status(BAD_REQUEST).body(new ApiResponse("Invalid page size", null));
+        }
+        else if (!sortOrder.equalsIgnoreCase("asc") && !sortOrder.equalsIgnoreCase("desc")) {
+            return ResponseEntity.status(BAD_REQUEST).body(new ApiResponse("Invalid sort order", null));
+        }
+
+        List<Product> products = productService.getAllProducts(pageSize, page, sortBy, sortOrder);
         List<ProductDto> convertedProducts = productService.getConvertedProducts(products);
 
         return ResponseEntity.ok().body(new ApiResponse("Products found", convertedProducts));
