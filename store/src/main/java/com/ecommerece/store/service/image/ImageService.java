@@ -45,7 +45,7 @@ public class ImageService implements IImageService{
         for (MultipartFile file : files) {
             try {
                 Image image = new Image();
-                String downloadUrl = "api/v1/images/";
+                String downloadUrl = "/images/";
 
                 image.setFileName(file.getOriginalFilename());
                 image.setFileType(file.getContentType());
