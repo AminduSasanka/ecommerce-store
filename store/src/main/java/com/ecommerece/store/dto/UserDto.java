@@ -1,6 +1,9 @@
 package com.ecommerece.store.dto;
 
+import com.ecommerece.store.model.Role;
 import lombok.Data;
+
+import java.util.Set;
 
 @Data
 public class UserDto {
@@ -10,4 +13,5 @@ public class UserDto {
     private String email;
     private String phone;
     private String address;
+    private Set<RoleDto> roles;
 }

@@ -1,5 +1,6 @@
 package com.ecommerece.store.service.user;
 
+import com.ecommerece.store.dto.RoleDto;
 import com.ecommerece.store.dto.UserDto;
 import com.ecommerece.store.exception.AlreadyExistException;
 import com.ecommerece.store.exception.ResourceNotFoundException;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -103,7 +106,14 @@ public class UserService implements IUserService {
 
     @Override
     public UserDto convertToDto(User user) {
-        return modelMapper.map(user, UserDto.class);
+        UserDto userDto = modelMapper.map(user, UserDto.class);
+        Set<RoleDto> roleDtos = user.getRoles().stream()
+                .map(role -> modelMapper.map(role, RoleDto.class))
+                .collect(Collectors.toSet());
+
+        userDto.setRoles(roleDtos);
+
+        return userDto;
     }
 
     @Override
