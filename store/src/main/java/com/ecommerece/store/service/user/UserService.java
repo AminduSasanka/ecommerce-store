@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.Optional;
 public class UserService implements IUserService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserDto getUserById(Long userId) throws ResourceNotFoundException {
@@ -63,6 +65,7 @@ public class UserService implements IUserService {
                     user.setPhone(request.getPhone());
                     user.setEmail(request.getEmail());
                     user.setAddress(request.getAddress());
+                    user.setPassword(passwordEncoder.encode(request.getPassword()));
 
                     userRepository.save(user);
 

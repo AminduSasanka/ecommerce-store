@@ -22,11 +22,39 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
-        loadDefaultUsers();
         createDefaultRoles();
+        createDefaultAdmins();
+        loadDefaultUsers();
+    }
+
+    private void createDefaultAdmins() {
+        List<Role> roles = roleRepository.findByName("ADMIN");
+
+        for (int i = 0; i <= 5; i++){
+            String defaultEmail = "admin" + i + "@admin_email.com";
+
+            if (userRepository.existsByEmail(defaultEmail)){
+                continue;
+            }
+
+            User user = new User();
+            user.setEmail(defaultEmail);
+            user.setFirstName("Admin" + i);
+            user.setLastName("User" + i);
+            user.setAddress(defaultEmail + "address" + i);
+            user.setPhone("011123456" + i);
+            user.setRoles(roles);
+            user.setPassword(passwordEncoder.encode("P@ssw0rd"));
+
+            userRepository.save(user);
+
+            System.out.println("User " + i + " created");
+        }
     }
 
     private void loadDefaultUsers() {
+        List<Role> roles = roleRepository.findByName("USER");
+
         for (int i = 0; i <= 5; i++){
             String defaultEmail = "user" + i + "@email.com";
 
@@ -40,6 +68,7 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
             user.setLastName("User" + i);
             user.setAddress(defaultEmail + "address" + i);
             user.setPhone("011123456" + i);
+            user.setRoles(roles);
             user.setPassword(passwordEncoder.encode("P@ssw0rd"));
 
             userRepository.save(user);
