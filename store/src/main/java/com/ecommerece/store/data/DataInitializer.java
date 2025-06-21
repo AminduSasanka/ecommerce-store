@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
@@ -28,7 +29,11 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
     }
 
     private void createDefaultAdmins() {
-        List<Role> roles = roleRepository.findByName("ADMIN");
+        Role adminRole = roleRepository.findFirstByName("ADMIN");
+
+        if (adminRole == null) {
+            throw new IllegalStateException("ADMIN role not found in the database");
+        }
 
         for (int i = 0; i <= 5; i++){
             String defaultEmail = "admin" + i + "@admin_email.com";
@@ -43,7 +48,7 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
             user.setLastName("User" + i);
             user.setAddress(defaultEmail + "address" + i);
             user.setPhone("011123456" + i);
-            user.setRoles(roles);
+            user.setRoles(Set.of(adminRole));
             user.setPassword(passwordEncoder.encode("P@ssw0rd"));
 
             userRepository.save(user);
@@ -53,7 +58,11 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
     }
 
     private void loadDefaultUsers() {
-        List<Role> roles = roleRepository.findByName("USER");
+        Role userRole = roleRepository.findFirstByName("USER");
+
+        if (userRole == null) {
+            throw new IllegalStateException("ADMIN role not found in the database");
+        }
 
         for (int i = 0; i <= 5; i++){
             String defaultEmail = "user" + i + "@email.com";
@@ -68,7 +77,7 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
             user.setLastName("User" + i);
             user.setAddress(defaultEmail + "address" + i);
             user.setPhone("011123456" + i);
-            user.setRoles(roles);
+            user.setRoles(Set.of(userRole));
             user.setPassword(passwordEncoder.encode("P@ssw0rd"));
 
             userRepository.save(user);

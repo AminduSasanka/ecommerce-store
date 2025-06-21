@@ -9,4 +9,6 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
     boolean existsByName(String name);
 
     List<Role> findByName(String name);
+
+    Role findFirstByName(String admin);
 }
