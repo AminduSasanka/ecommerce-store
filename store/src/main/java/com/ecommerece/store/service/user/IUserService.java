@@ -27,4 +27,6 @@ public interface IUserService {
     List<UserDto> getAllUsers();
 
     UserDto convertToDto(User user);
+
+    User getAuthenticatedUser();
 }

@@ -4,7 +4,8 @@ import com.ecommerece.store.dto.CartItemDto;
 import com.ecommerece.store.model.CartItem;
 
 public interface ICartItemService {
-    void addCartItem(Long cartItemId, Long productId, int quantity);
+    void addCartItem(Long userId, Long productId, int quantity);
+
     void removeCartItem(Long cartId, Long productId);
     void updateCartItem(Long cartItemId, Long productId, int quantity);
 
