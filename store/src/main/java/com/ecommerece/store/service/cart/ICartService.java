@@ -12,6 +12,4 @@ public interface ICartService {
     CartDto getCartByUserId(Long id);
 
     CartDto convertToDto(Cart cart);
-
-    Cart createOrGetExistingUserCart(Long userId);
 }

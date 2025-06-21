@@ -22,11 +22,10 @@ public class CartItemService implements ICartItemService {
     private final CartRepository cartRepository;
     private final IProductService productService;
     private final ModelMapper modelMapper;
-    private final CartService cartService;
 
     @Override
     public void addCartItem(Long userId, Long productId, int quantity) throws ResourceNotFoundException {
-        Cart cart = cartService.createOrGetExistingUserCart(userId);
+        Cart cart = createOrGetExistingUserCart(userId);
         Product product = productService.getProductById(productId);
 
         CartItem cartItem = cart.getCartItems()
@@ -100,5 +99,17 @@ public class CartItemService implements ICartItemService {
         cartItemDto.setProduct(productDto);
 
         return cartItemDto;
+    }
+
+    private Cart createOrGetExistingUserCart(Long userId) {
+        Cart userCart = cartRepository.findByUserId(userId);
+
+        if (userCart.getId() == null) {
+            userCart = new Cart();
+            userCart.setId(userId);
+            cartRepository.save(userCart);
+        }
+
+        return userCart;
     }
 }

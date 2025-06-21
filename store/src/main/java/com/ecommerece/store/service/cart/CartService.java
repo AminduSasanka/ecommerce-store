@@ -65,17 +65,4 @@ public class CartService implements ICartService {
 
         return cartDto;
     }
-
-    @Override
-    public Cart createOrGetExistingUserCart(Long userId) {
-        Cart userCart = cartRepository.findByUserId(userId);
-
-        if (userCart.getId() == null) {
-            userCart = new Cart();
-            userCart.setId(userId);
-            cartRepository.save(userCart);
-        }
-
-        return userCart;
-    }
 }
